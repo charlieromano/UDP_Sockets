@@ -29,8 +29,3 @@ class myTransform :
 		self.output = json.dumps(self.output)
 		return self.output
 
-
-from myTransform import myTransform
-input_stream = 'csv_test.csv'
-ETL = myTransform (input_stream)
-output_stream = ETL.csv2json()
