@@ -12,7 +12,7 @@ import time
 ip = "127.0.0.1"
 port = 10000
 myClient = myUDPClient(ip, port)
-refresh_time = 3
+refresh_time = 30
 
 f = open('config.txt')
 lines = f.readline().split()
