@@ -1,63 +1,77 @@
 #main.py
 from mySignals import myHandler
-from threading import Thread
 from myTransform import myTransform
 from myUDPClient import myUDPClient
-import signal
 import socket
+import time
+import threading
+import signal  
 import time
 
 # UDP Client
 ip = "127.0.0.1"
 port = 10000
-myClient = myUDPClient(ip, port)	
+myClient = myUDPClient(ip, port)
+refresh_time = 3
 
-class myJob (Thread):
+f = open('config.txt')
+lines = f.readline().split()
+input_stream = lines[0]#'csv_test.csv'
+
+
+
+class myJob (threading.Thread):
+    
+    threadLock = threading.Lock()
 
     def __init__(self, name, timer):
         super().__init__()  #myThread.__init__(self)
         self.name = name
         self.timer = timer
+        self.shutdown_flag = threading.Event()
 
     def start(self):
         print ("Comienza thread:"+self.name)
-        while self.timer:
-            time.sleep(self.timer)
-            # csv to json
-            input_stream = 'csv_test.csv'
-            ETL = myTransform (input_stream)
-            myJob.threadLock.acquire()
-            output_stream = ETL.csv2json()
-            myJob.threadLock.release()
-            # status
-            print ("%s: %s, se ejecuta cada %d segundos;" % (self.name, time.ctime(time.time()), self.timer))
-            
+        try:
+            while not self.shutdown_flag.is_set():
+                myJob.threadLock.acquire()
+                # csv to json
+                ETL = myTransform (input_stream)
+                output_stream = ETL.csv2json()
+                # send message
+                myClient.sendto(output_stream)
+                myJob.threadLock.release()
+                # status
+                print ("%s: running every %d seconds: %s" % (self.name, self.timer,time.ctime(time.time())))
+                time.sleep(self.timer)
+
+        except Exception:
+            self.shutdown_flag.set()
+        
 
         print ("Exit:"+self.name)
 
 
 
 def main():
-    signal.signal(signal.SIGINT, myHandler)
-    input_stream = 'csv_test.csv'
+
     print("Starting main program")
+
+    signal.signal(signal.SIGINT, myHandler)
     
     try:
+        j1 = myJob("Thread", refresh_time)
+        j1.start()
 
         while True:
-            ETL = myTransform (input_stream)
-            output_stream = ETL.csv2json()
-            print ("Main:")
-            myClient.sendto(output_stream)
-            time.sleep(10)
+            time.sleep(0.5)
 
-    except:
-    	pass
+    except Exception:
+        print('Exit: Main')
+        j1.shutdown_flag.set()
+        j1.join()
 
-    print('Exiting main program')
- 
  
 if __name__ == '__main__':
     main()
 
-  
