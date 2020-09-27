@@ -68,6 +68,7 @@ def main():
 
     except Exception:
         print('Exit: Main')
+        myClient.close()
         j1.shutdown_flag.set()
         j1.join()
 

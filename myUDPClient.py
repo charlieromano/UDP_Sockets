@@ -15,6 +15,9 @@ class myUDPClient:
     	self.sock.sendto(data.encode(), self.server_address)
     	#self.response = self.sock.recvfrom(128*1024)
 
+    def close(self):
+    	self.sock.close()
+
 #from myUDPClient import myUDPClient
 #ip = "127.0.0.1"
 #port = 10000
