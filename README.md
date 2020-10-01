@@ -20,7 +20,11 @@ Para ejecutar:
    ```
 
 ![Screenshot from 2020-09-23 18-42-00](/home/charlieromano/Documents/Academico/CESE/Materias/OSApps/TP1_alumnos/UDP_Sockets/Screenshot from 2020-09-23 18-42-00.png)
-<img src="./Screenshot%20from%202020-09-23%2018-36-36.png">
+<img src="./Screenshot%20from%202020-09-23%2018-42-00.png">
+
+### Resultado 
+
+<img src="./Screenshot from 2020-10-01 20-07-39.png">
 
 
 
