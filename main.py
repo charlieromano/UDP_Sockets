@@ -30,7 +30,7 @@ class myJob (threading.Thread):
         self.timer = timer
         self.shutdown_flag = threading.Event()
 
-    def start(self):
+    def run(self):
         print ("Comienza thread:"+self.name)
         try:
             while not self.shutdown_flag.is_set():
@@ -43,7 +43,7 @@ class myJob (threading.Thread):
                 myJob.threadLock.release()
                 # status
                 print ("%s: running every %d seconds: %s" % (self.name, self.timer,time.ctime(time.time())))
-                time.sleep(self.timer)
+                self.shutdown_flag.wait(self.timer)
 
         except Exception:
             self.shutdown_flag.set()
